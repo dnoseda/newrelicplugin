@@ -1,3 +1,4 @@
+import com.newrelic.api.agent.NewRelic
 class NewrelicGrailsPlugin {
 	// the plugin version
 	def version = "0.1"
@@ -9,24 +10,17 @@ class NewrelicGrailsPlugin {
 	def pluginExcludes = [
 	"grails-app/views/error.gsp"
 	]
-
-	// TODO Fill in these fields
-	def author = "Your name"
-	def authorEmail = ""
-	def title = "Plugin summary/headline"
-	def description = '''\\
-	Brief description of the plugin.
-	'''
-
-	// URL to the plugin's documentation
-	def documentation = "http://grails.org/plugin/newrelic"
+    def author = "Damian Noseda"
+    def authorEmail = "dnoseda@gmail.com"
+    def title = "NewRelic"
+    def description = '''\\
+Integration of newrelic with grails applications
+'''
 
 	def doWithWebDescriptor = { xml ->
-		// TODO Implement additions to web.xml (optional), this event occurs before 
 	}
 
 	def doWithSpring = {
-		// TODO Implement runtime spring config (optional)
 	}
 
 	def doWithDynamicMethods = {ctx ->
@@ -62,7 +56,6 @@ class NewrelicGrailsPlugin {
 					}
 					if (!found){
 						return delegate.metaClass.invokeMissingMethod(delegate, name, args)
-						/*throw new MissingMethodException(name, delegate.class, args)*/
 					}
 				}
 
@@ -70,30 +63,26 @@ class NewrelicGrailsPlugin {
 
 				boolean systemError = false;
 				try {
-					SPRING_COUNTER.bindContextIncludingCpu(requestName);
+					NewRelic.incrementCounter(requestName)
+					initTime = System.currentTimeInMillis()
 					return metaMethod.doMethodInvoke(delegate, args)
 				} catch (final Error e) {
 					systemError = true;
+					NewRelic.noticeError(e, [msg:"calling to $requestName"])
 					throw e;
 				} finally {
-					SPRING_COUNTER.addRequestForCurrentContext(systemError);
+					NewRelic.recordResponseTimeMetric(requestName, initTime - System.currentTimeInMillis())
 				}
 			}
 		}
 	}
 
 	def doWithApplicationContext = { applicationContext ->
-		// TODO Implement post initialization spring config (optional)
 	}
 
 	def onChange = { event ->
-		// TODO Implement code that is executed when any artefact that this plugin is
-		// watching is modified and reloaded. The event contains: event.source,
-		// event.application, event.manager, event.ctx, and event.plugin.
 	}
 
 	def onConfigChange = { event ->
-		// TODO Implement code that is executed when the project configuration changes.
-		// The event is the same as for 'onChange'.
 	}
 }
