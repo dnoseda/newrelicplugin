@@ -60,18 +60,19 @@ Integration of newrelic with grails applications
 				}
 
 				final String requestName = "${serviceClass.name}.${name}";
+				long initTime = System.currentTimeMillis()
 
 				boolean systemError = false;
 				try {
 					NewRelic.incrementCounter(requestName)
-					initTime = System.currentTimeInMillis()
+					initTime = System.currentTimeMillis()
 					return metaMethod.doMethodInvoke(delegate, args)
 				} catch (final Error e) {
 					systemError = true;
 					NewRelic.noticeError(e, [msg:"calling to $requestName"])
 					throw e;
 				} finally {
-					NewRelic.recordResponseTimeMetric(requestName, initTime - System.currentTimeInMillis())
+					NewRelic.recordResponseTimeMetric(requestName, initTime - System.currentTimeMillis())
 				}
 			}
 		}
