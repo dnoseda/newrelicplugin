@@ -1,7 +1,7 @@
 import com.newrelic.api.agent.NewRelic
 class NewrelicGrailsPlugin {
 	// the plugin version
-	def version = "0.2"
+	def version = "0.3"
 	// the version or versions of Grails the plugin is designed for
 	def grailsVersion = "1.3.5 > *"
 	// the other plugins this plugin depends on
@@ -72,7 +72,7 @@ Integration of newrelic with grails applications
 					NewRelic.noticeError(e, [msg:"calling to $requestName"])
 					throw e;
 				} finally {
-					NewRelic.recordResponseTimeMetric(requestName, initTime - System.currentTimeMillis())
+					NewRelic.recordMetric(requestName, initTime - System.currentTimeMillis())
 				}
 			}
 		}
