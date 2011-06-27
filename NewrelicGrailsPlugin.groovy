@@ -66,10 +66,6 @@ class NewrelicGrailsPlugin {
 					}
 				}
 
-				if (DISABLED || !SPRING_COUNTER.isDisplayed()) {
-					return metaMethod.doMethodInvoke(delegate, args)
-				}
-
 				final String requestName = "${serviceClass.name}.${name}";
 
 				boolean systemError = false;
